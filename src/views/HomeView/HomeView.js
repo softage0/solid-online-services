@@ -1,5 +1,5 @@
 /* @flow */
-import React from 'react'
+import React from 'react';
 
 export class HomeView extends React.Component {
   render () {
@@ -7,8 +7,8 @@ export class HomeView extends React.Component {
       <div>
         <h1>Your New Project</h1>
       </div>
-    )
+    );
   }
 }
 
-export default HomeView
+export default HomeView;
