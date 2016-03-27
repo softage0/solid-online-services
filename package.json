@@ -60,9 +60,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/davezuko/react-redux-starter-kit.git"
+    "url": "git+https://github.com/softage0/solid-online-services.git"
   },
-  "author": "David Zukowski <david@zuko.me> (http://zuko.me)",
+  "author": "Wonju Jeon <softage0@gmail.com>",
   "license": "MIT",
   "dependencies": {
     "debug": "^2.2.0",
