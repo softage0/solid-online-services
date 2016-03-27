@@ -8,7 +8,7 @@ export class SignUp extends React.Component {
 
   render () {
     return (
-      <div></div>
+      <h1>Sign Up</h1>
     )
   }
 }

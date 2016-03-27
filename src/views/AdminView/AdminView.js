@@ -8,7 +8,7 @@ export class Admin extends React.Component {
 
   render () {
     return (
-      <div></div>
+      <div>Admin</div>
     )
   }
 }

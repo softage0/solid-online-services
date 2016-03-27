@@ -10,3 +10,8 @@ For example:
 @import './variables/components';
 @import './themes/default';
 */
+
+/* Move down content because we have a fixed navbar that is 50px tall */
+#root {
+  padding-top: 50px;
+}
