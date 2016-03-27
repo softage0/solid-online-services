@@ -25,7 +25,7 @@ $ npm install                   # Install Node modules listed in ./package.json 
 $ npm start                     # Compile and launch
 ```
 
-If you do not want to disable redux devtools use the following command instead of `npm start`:
+If you want to disable redux devtools use the following command instead of `npm start`:
 
 ```shell
 $ npm run dev:no-debug
