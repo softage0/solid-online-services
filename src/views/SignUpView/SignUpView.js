@@ -1,4 +1,5 @@
 import React from 'react'
+import SignUpForm from '../../forms/SignUpForm'
 
 type Props = {
 
@@ -8,7 +9,7 @@ export class SignUp extends React.Component {
 
   render () {
     return (
-      <h1>Sign Up</h1>
+      <SignUpForm />
     )
   }
 }
