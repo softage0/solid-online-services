@@ -1,67 +1,79 @@
 /* @flow */
+import fetch from 'isomorphic-fetch'
 // ------------------------------------
 // Constants
 // ------------------------------------
-export const SIGN_UP = 'SIGN_UP'
-
-let keyCount = 1
+export const POST_SIGN_UP_REQUEST = 'POST_SIGN_UP_REQUEST'
+export const POST_SIGN_UP_SUCCESS = 'POST_SIGN_UP_SUCCESS'
+export const POST_SIGN_UP_FAILURE = 'POST_SIGN_UP_FAILURE'
 
 // ------------------------------------
 // Actions
 // ------------------------------------
-// NOTE: "Action" is a Flow interface defined in https://github.com/TechnologyAdvice/flow-interfaces
-// If you're unfamiliar with Flow, you are completely welcome to avoid annotating your code, but
-// if you'd like to learn more you can check out: flowtype.org.
-// DOUBLE NOTE: there is currently a bug with babel-eslint where a `space-infix-ops` error is
-// incorrectly thrown when using arrow functions, hence the oddity.
-export function signUp (value): Object {
-  keyCount += 1
+function signUpRequest (data) {
   return {
-    type: SIGN_UP,
-    data: {key: keyCount, ...value}
+    type: POST_SIGN_UP_REQUEST,
+    data
   }
 }
 
-// This is a thunk, meaning it is a function that immediately
-// returns a function for lazy evaluation. It is incredibly useful for
-// creating async actions, especially when combined with redux-thunk!
-// NOTE: This is solely for demonstration purposes. In a real application,
-// you'd probably want to dispatch an action of COUNTER_DOUBLE and let the
-// reducer take care of this logic.
-export const doubleAsync = (): Function => {
-  return (dispatch: Function, getState: Function): Promise => {
-    return new Promise((resolve: Function): void => {
-      setTimeout(() => {
-        dispatch(signUp(getState().counter))
-        resolve()
-      }, 200)
+function signUpSuccess () {
+  return {
+    type: POST_SIGN_UP_SUCCESS
+  }
+}
+
+function signUpFailure (error) {
+  return {
+    type: POST_SIGN_UP_FAILURE,
+    error
+  }
+}
+
+export function signUp (data) {
+  return (dispatch) => {
+    dispatch(signUpRequest(data))
+
+    return fetch('/api/account', {
+      method: 'POST',
+      body: JSON.stringify(data),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }).then(function (response) {
+      if (response.status === 200) {
+        dispatch(signUpSuccess())
+      }
+    }, function (error) {
+      dispatch(signUpFailure(error))
     })
   }
 }
 
 export const actions = {
-  signUp,
-  doubleAsync
+  signUp
 }
 
 // ------------------------------------
 // Action Handlers
 // ------------------------------------
 const ACTION_HANDLERS = {
-  [SIGN_UP]: (state: Object, action: {data: Object}): Object => {
-    $.ajax({
-      url: 'account.json',
-      dataType: 'json',
-      type: 'POST',
-      data: action.data,
-      success: function (res) {
-        console.log(res)
-        return Object.assign({}, state, action.data)
-      },
-      error: function (xhr, status, err) {
-        console.error(this.props.url, status, err.toString())
-        return state
-      }
+  [POST_SIGN_UP_REQUEST]: (state, action) => {
+    return Object.assign({}, state, {
+      isFetching: true,
+      didInvalidate: false
+    })
+  },
+  [POST_SIGN_UP_SUCCESS]: (state, action) => {
+    return Object.assign({}, state, {
+      isFetching: false,
+      didInvalidate: false
+    })
+  },
+  [POST_SIGN_UP_FAILURE]: (state, action) => {
+    return Object.assign({}, state, {
+      isFetching: false,
+      didInvalidate: true
     })
   }
 }
@@ -69,8 +81,13 @@ const ACTION_HANDLERS = {
 // ------------------------------------
 // Reducer
 // ------------------------------------
-const initialState = {}
-export default function accountReducer (state: Object = initialState, action: Action): Object {
+const initialState = {
+  isFetching: false,
+  didInvalidate: false,
+  items: []
+}
+
+export default function accountReducer (state = initialState, action) {
   const handler = ACTION_HANDLERS[action.type]
 
   return handler ? handler(state, action) : state
