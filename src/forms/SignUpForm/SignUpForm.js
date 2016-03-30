@@ -11,8 +11,8 @@ const validate = (values) => {
 
 type Props = {
   handleSubmit: Function,
-  fields: Object,
-  isFetching: Boolean
+  resetForm: Function,
+  fields: Object
 }
 
 export class SignUp extends React.Component {
@@ -23,10 +23,10 @@ export class SignUp extends React.Component {
   };
 
   render () {
-    const { fields: {id, password, name, email}, handleSubmit, isFetching } = this.props
+    const { fields: {id, password, name, email}, handleSubmit, resetForm } = this.props
 
     return (
-      <form className='form-horizontal' onSubmit={handleSubmit((values, dispatch) => { dispatch(signUp(values)) })}>
+      <form className='form-horizontal' onSubmit={handleSubmit((values, dispatch) => dispatch(signUp(values)))}>
         <fieldset>
           <legend>Sign Up</legend>
           <div className='form-group'>
@@ -55,9 +55,8 @@ export class SignUp extends React.Component {
           </div>
           <div className='form-group'>
             <div className='col-lg-10 col-lg-offset-2'>
-              <button type='reset' className='btn btn-default'>Cancel</button>
+              <button type='reset' className='btn btn-default' onClick={resetForm}>Cancel</button>
               <button type='submit' className='btn btn-primary'>Submit</button>
-              {isFetching && <span className='label label-default'>Signing up...</span>}
             </div>
           </div>
         </fieldset>
