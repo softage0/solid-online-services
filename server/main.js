@@ -5,6 +5,10 @@ import webpackConfig from '../build/webpack.config'
 import historyApiFallback from 'koa-connect-history-api-fallback'
 import serve from 'koa-static'
 import proxy from 'koa-proxy'
+import route from 'koa-route'
+import parse from 'co-body'
+import monk from 'monk'
+import wrap from 'co-monk';
 import _debug from 'debug'
 import config from '../config'
 import webpackDevMiddleware from './middleware/webpack-dev'
@@ -13,6 +17,8 @@ import webpackHMRMiddleware from './middleware/webpack-hmr'
 const debug = _debug('app:server')
 const paths = config.utils_paths
 const app = new Koa()
+const db = monk(config.db_uri)
+const Accounts = wrap(db.get('accounts'));
 
 // Enable koa-proxy if it has been enabled in the config.
 if (config.proxy && config.proxy.enabled) {
@@ -56,5 +62,49 @@ if (config.env === 'development') {
   // server in production.
   app.use(convert(serve(paths.base(config.dir_dist))))
 }
+
+
+// ------------------------------------
+// REST API
+// ------------------------------------
+
+// create new account
+app.use(convert(route.post('/api/account', function*() {
+  let newAccount = yield parse(this);
+  newAccount.created_at = new Date;
+
+  yield Accounts.insert(newAccount);
+  this.body = 'Success';
+})));
+
+// show all account list
+// POST is used instead of GET since React-router eats all GET request.
+// It would rather split api domain and use GET request.
+app.use(convert(route.post('/api/account_list', function*() {
+  this.body = yield Accounts.find({});
+})));
+
+// show account list by id
+// POST is used instead of GET since React-router eats all GET request.
+// It would rather split api domain and use GET request.
+app.use(convert(route.post('/api/account/:id', function*(id) {
+  let account = yield Accounts.findOne({_id:id});
+  if (!account) this.throw(404, 'invalid account id');
+  this.body = account;
+})));
+
+// modify account detail
+app.use(convert(route.put('/api/account', function *() {
+  let modifiedAccount = JSON.parse(yield parse(this));
+  modifiedAccount.modified_at = new Date;
+
+  var updated = yield Accounts.updateById(modifiedAccount._id, modifiedAccount);
+  if(!updated) {
+    this.throw(405, "Unable to update account %s", modifiedAccount._id);
+  }
+
+  this.body = updated;
+})));
+
 
 export default app

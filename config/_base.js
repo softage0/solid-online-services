@@ -23,6 +23,11 @@ const config = {
   server_port : process.env.PORT || 3000,
 
   // ----------------------------------
+  // Database Configuration
+  // ----------------------------------
+  db_uri : process.env.MONGOLAB_URI || 'mongodb://heroku_gqddq241:umh29jg8pccdbe5k6ia248lde2@ds025379.mlab.com:25379/heroku_gqddq241',
+
+  // ----------------------------------
   // Compiler Configuration
   // ----------------------------------
   compiler_css_modules     : true,
