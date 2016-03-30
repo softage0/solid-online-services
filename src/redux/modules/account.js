@@ -6,33 +6,40 @@ import fetch from 'isomorphic-fetch'
 export const FETCH_REQUEST = 'FETCH_REQUEST'
 export const FETCH_SUCCESS = 'FETCH_SUCCESS'
 export const FETCH_FAILURE = 'FETCH_FAILURE'
+export const FETCH_ACCOUNT_LIST = 'FETCH_ACCOUNT_LIST'
 
 // ------------------------------------
 // Actions
 // ------------------------------------
-function signUpRequest (data) {
+function fetchRequest () {
   return {
-    type: FETCH_REQUEST,
-    data
+    type: FETCH_REQUEST
   }
 }
 
-function signUpSuccess () {
+function fetchSuccess () {
   return {
     type: FETCH_SUCCESS
   }
 }
 
-function signUpFailure (error) {
+function fetchFailure (error) {
   return {
     type: FETCH_FAILURE,
     error
   }
 }
 
+function fetchAccountList (data) {
+  return {
+    type: FETCH_ACCOUNT_LIST,
+    data
+  }
+}
+
 export function signUp (data) {
   return (dispatch) => {
-    dispatch(signUpRequest(data))
+    dispatch(fetchRequest())
 
     return fetch('/api/account', {
       method: 'POST',
@@ -42,37 +49,39 @@ export function signUp (data) {
       }
     }).then(function (response) {
       if (response.status === 200) {
-        dispatch(signUpSuccess())
+        dispatch(fetchSuccess())
         location.href = '/?dialog=sign_up_success'
       }
     }, function (error) {
-      dispatch(signUpFailure(error))
+      dispatch(fetchFailure(error))
     })
   }
 }
 
-export function accountList (data) {
+export function updateAccountList () {
   return (dispatch) => {
-    dispatch(signUpRequest(data))
+    dispatch(fetchRequest())
 
-    return fetch('/api/account', {
+    return fetch('/api/account_list', {
       method: 'POST',
-      body: JSON.stringify(data),
       headers: {
         'Content-Type': 'application/json'
       }
     }).then(function (response) {
       if (response.status === 200) {
-        dispatch(signUpSuccess())
+        response.text().then((data) => {
+          dispatch(fetchAccountList(JSON.parse(data)))
+        })
       }
     }, function (error) {
-      dispatch(signUpFailure(error))
+      dispatch(fetchFailure(error))
     })
   }
 }
 
 export const actions = {
-  signUp
+  signUp,
+  updateAccountList
 }
 
 // ------------------------------------
@@ -96,6 +105,13 @@ const ACTION_HANDLERS = {
       isFetching: false,
       didInvalidate: true
     })
+  },
+  [FETCH_ACCOUNT_LIST]: (state, action) => {
+    return Object.assign({}, state, {
+      isFetching: false,
+      didInvalidate: false,
+      accounts: action.data
+    })
   }
 }
 
@@ -105,7 +121,7 @@ const ACTION_HANDLERS = {
 const initialState = {
   isFetching: false,
   didInvalidate: false,
-  items: []
+  accounts: []
 }
 
 export default function accountReducer (state = initialState, action) {
