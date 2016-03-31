@@ -1,5 +1,6 @@
 /* @flow */
 import fetch from 'isomorphic-fetch'
+import { push } from 'react-router-redux'
 // ------------------------------------
 // Constants
 // ------------------------------------
@@ -7,6 +8,12 @@ export const FETCH_REQUEST = 'FETCH_REQUEST'
 export const FETCH_SUCCESS = 'FETCH_SUCCESS'
 export const FETCH_FAILURE = 'FETCH_FAILURE'
 export const FETCH_ACCOUNT_LIST = 'FETCH_ACCOUNT_LIST'
+export const SHOW_INVALID_CREDENTIAL = 'SHOW_INVALID_CREDENTIAL'
+export const HIDE_INVALID_CREDENTIAL = 'HIDE_INVALID_CREDENTIAL'
+export const SHOW_SIGN_UP_SUCCESS = 'SHOW_SIGN_UP_SUCCESS'
+export const HIDE_SIGN_UP_SUCCESS = 'HIDE_SIGN_UP_SUCCESS'
+export const SET_LOGIN_SUCCESS = 'SET_LOGIN_SUCCESS'
+export const HIDE_LOGIN_SUCCESS = 'HIDE_LOGIN_SUCCESS'
 
 // ------------------------------------
 // Actions
@@ -14,12 +21,6 @@ export const FETCH_ACCOUNT_LIST = 'FETCH_ACCOUNT_LIST'
 function fetchRequest () {
   return {
     type: FETCH_REQUEST
-  }
-}
-
-function fetchSuccess () {
-  return {
-    type: FETCH_SUCCESS
   }
 }
 
@@ -37,8 +38,44 @@ function fetchAccountList (data) {
   }
 }
 
+function showInvalidCredential () {
+  return {
+    type: SHOW_INVALID_CREDENTIAL
+  }
+}
+
+function hideInvalidCredential () {
+  return {
+    type: HIDE_INVALID_CREDENTIAL
+  }
+}
+
+function showSignUpSuccess () {
+  return {
+    type: SHOW_SIGN_UP_SUCCESS
+  }
+}
+
+function hideSignUpSuccess () {
+  return {
+    type: HIDE_SIGN_UP_SUCCESS
+  }
+}
+
+function setLoginSuccess () {
+  return {
+    type: SET_LOGIN_SUCCESS
+  }
+}
+
+function hideLoginSuccess () {
+  return {
+    type: HIDE_LOGIN_SUCCESS
+  }
+}
+
 export function signUp (data) {
-  return (dispatch) => {
+  return (dispatch, getState) => {
     dispatch(fetchRequest())
 
     return fetch('/api/account', {
@@ -49,8 +86,35 @@ export function signUp (data) {
       }
     }).then(function (response) {
       if (response.status === 200) {
-        dispatch(fetchSuccess())
-        location.href = '/?dialog=sign_up_success'
+        dispatch(push('/'))
+        dispatch(showSignUpSuccess())
+        setTimeout(() => dispatch(hideSignUpSuccess()), 3000)
+      }
+    }, function (error) {
+      dispatch(fetchFailure(error))
+    })
+  }
+}
+
+export function login (data) {
+  return (dispatch) => {
+    dispatch(fetchRequest())
+
+    return fetch('/api/login', {
+      method: 'POST',
+      body: JSON.stringify(data),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }).then(function (response) {
+      if (response.status === 200) {
+        dispatch(push('/'))
+        dispatch(setLoginSuccess())
+        setTimeout(() => dispatch(hideLoginSuccess()), 3000)
+      }
+      if (response.status === 401) {
+        dispatch(showInvalidCredential())
+        setTimeout(() => dispatch(hideInvalidCredential()), 2000)
       }
     }, function (error) {
       dispatch(fetchFailure(error))
@@ -81,6 +145,7 @@ export function updateAccountList () {
 
 export const actions = {
   signUp,
+  login,
   updateAccountList
 }
 
@@ -112,6 +177,43 @@ const ACTION_HANDLERS = {
       didInvalidate: false,
       accounts: action.data
     })
+  },
+  [SHOW_INVALID_CREDENTIAL]: (state, action) => {
+    return Object.assign({}, state, {
+      isFetching: false,
+      didInvalidate: false,
+      showInvalidCredential: true
+    })
+  },
+  [HIDE_INVALID_CREDENTIAL]: (state, action) => {
+    return Object.assign({}, state, {
+      showInvalidCredential: false
+    })
+  },
+  [SHOW_SIGN_UP_SUCCESS]: (state, action) => {
+    return Object.assign({}, state, {
+      isFetching: false,
+      didInvalidate: false,
+      showSignUpSuccess: true
+    })
+  },
+  [HIDE_SIGN_UP_SUCCESS]: (state, action) => {
+    return Object.assign({}, state, {
+      showSignUpSuccess: false
+    })
+  },
+  [SET_LOGIN_SUCCESS]: (state, action) => {
+    return Object.assign({}, state, {
+      isFetching: false,
+      didInvalidate: false,
+      showLoginSuccess: true,
+      isLogin: true
+    })
+  },
+  [HIDE_LOGIN_SUCCESS]: (state, action) => {
+    return Object.assign({}, state, {
+      showLoginSuccess: false
+    })
   }
 }
 
@@ -121,6 +223,9 @@ const ACTION_HANDLERS = {
 const initialState = {
   isFetching: false,
   didInvalidate: false,
+  showInvalidCredential: false,
+  showSignUpSuccess: false,
+  showLoginSuccess: false,
   accounts: []
 }
 

@@ -1,11 +1,15 @@
-import React from 'react'
+import React, { PropTypes } from 'react'
+import { connect } from 'react-redux'
 import { Link } from 'react-router'
 
 type Props = {
-
+  account: Object
 };
-export class Header extends React.Component {
-  props: Props;
+
+export class Header extends React.Component<void, Props, void> {
+  static propTypes = {
+    account: PropTypes.object.isRequired
+  };
 
   render () {
     return (
@@ -22,6 +26,11 @@ export class Header extends React.Component {
             <Link className='navbar-brand' to='/'>Solid Online Services</Link>
           </div>
           <div id='navbar' className='navbar-collapse collapse'>
+            {this.props.account.showSignUpSuccess &&
+              <p className='navbar-text'>Sign Up Success</p>}
+            {this.props.account.showLoginSuccess &&
+              <p className='navbar-text'>Login Success</p>}
+
             <ul className='nav navbar-nav navbar-right'>
               <li><Link to='/signup'>Sign Up</Link></li>
               <li><Link to='/login'>Login</Link></li>
@@ -34,4 +43,9 @@ export class Header extends React.Component {
   }
 }
 
-export default Header
+const mapStateToProps = (state) => ({
+  account: state.account
+})
+
+export default connect(mapStateToProps, {
+})(Header)
