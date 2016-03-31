@@ -18,7 +18,11 @@ const debug = _debug('app:server')
 const paths = config.utils_paths
 const app = new Koa()
 const db = monk(config.db_uri)
-const Accounts = wrap(db.get('accounts'));
+const account_collection = db.get('accounts')
+const Accounts = wrap(account_collection);
+
+account_collection.index('id', { unique: true })
+
 
 // Enable koa-proxy if it has been enabled in the config.
 if (config.proxy && config.proxy.enabled) {
@@ -71,9 +75,14 @@ if (config.env === 'development') {
 // create new account
 app.use(convert(route.post('/api/account', function*() {
   let newAccount = yield parse(this);
-  newAccount.created_at = new Date;
+  let existence = yield Accounts.findOne({id:newAccount.id});
+  if (existence) {
+    this.throw(409, "Conflict: duplicate id");
+  }
 
+  newAccount.created_at = new Date;
   yield Accounts.insert(newAccount);
+
   this.body = 'Success';
 })));
 
@@ -104,6 +113,16 @@ app.use(convert(route.put('/api/account', function *() {
   }
 
   this.body = updated;
+})));
+
+// login
+app.use(convert(route.post('/api/login', function*() {
+  let credential = yield parse(this);
+  let account = yield Accounts.findOne({id:credential.id});
+  if(!account || account.password !== credential.password) {
+    this.throw(401, "Invalid credential");
+  }
+  this.body = 'Login Success';
 })));
 
 
