@@ -75,6 +75,10 @@ if (config.env === 'development') {
 // create new account
 app.use(convert(route.post('/api/account', function*() {
   let newAccount = yield parse(this);
+  if(!newAccount.id || !newAccount.password) {
+    this.throw(401, "Invalid credential");
+  }
+
   let existence = yield Accounts.findOne({id:newAccount.id});
   if (existence) {
     this.throw(409, "Conflict: duplicate id");
@@ -122,7 +126,9 @@ app.use(convert(route.post('/api/login', function*() {
   if(!account || account.password !== credential.password) {
     this.throw(401, "Invalid credential");
   }
-  this.body = 'Login Success';
+
+  delete account.password;
+  this.body = account;
 })));
 
 

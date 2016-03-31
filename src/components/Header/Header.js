@@ -1,14 +1,17 @@
 import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
+import { logout } from '../../redux/modules/account'
 
 type Props = {
-  account: Object
+  account: Object,
+  logout: Function
 };
 
 export class Header extends React.Component<void, Props, void> {
   static propTypes = {
-    account: PropTypes.object.isRequired
+    account: PropTypes.object.isRequired,
+    logout: PropTypes.func.isRequired
   };
 
   render () {
@@ -32,9 +35,12 @@ export class Header extends React.Component<void, Props, void> {
               <p className='navbar-text'>Login Success</p>}
 
             <ul className='nav navbar-nav navbar-right'>
-              <li><Link to='/signup'>Sign Up</Link></li>
-              <li><Link to='/login'>Login</Link></li>
               <li><Link to='/admin'>Admin</Link></li>
+              <li><Link to='/signup'>Sign Up</Link></li>
+              {!this.props.account.accountInfo &&
+                <li><Link to='/login'>Login</Link></li>}
+              {this.props.account.accountInfo &&
+                <li><Link to='/login' onClick={this.props.logout}>{this.props.account.accountInfo.name} logout</Link></li>}
             </ul>
           </div>
         </div>
@@ -48,4 +54,5 @@ const mapStateToProps = (state) => ({
 })
 
 export default connect(mapStateToProps, {
+  logout
 })(Header)

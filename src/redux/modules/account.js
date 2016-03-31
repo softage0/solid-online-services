@@ -1,6 +1,8 @@
 /* @flow */
 import fetch from 'isomorphic-fetch'
 import { push } from 'react-router-redux'
+import cookie from 'react-cookie'
+
 // ------------------------------------
 // Constants
 // ------------------------------------
@@ -14,6 +16,7 @@ export const SHOW_SIGN_UP_SUCCESS = 'SHOW_SIGN_UP_SUCCESS'
 export const HIDE_SIGN_UP_SUCCESS = 'HIDE_SIGN_UP_SUCCESS'
 export const SET_LOGIN_SUCCESS = 'SET_LOGIN_SUCCESS'
 export const HIDE_LOGIN_SUCCESS = 'HIDE_LOGIN_SUCCESS'
+export const REMOVE_ACCOUNT_INFO = 'REMOVE_ACCOUNT_INFO'
 
 // ------------------------------------
 // Actions
@@ -62,9 +65,10 @@ function hideSignUpSuccess () {
   }
 }
 
-function setLoginSuccess () {
+function setLoginSuccess (accountInfo) {
   return {
-    type: SET_LOGIN_SUCCESS
+    type: SET_LOGIN_SUCCESS,
+    accountInfo
   }
 }
 
@@ -74,9 +78,16 @@ function hideLoginSuccess () {
   }
 }
 
+function removeAccountInfo () {
+  return {
+    type: REMOVE_ACCOUNT_INFO
+  }
+}
+
 export function signUp (data) {
   return (dispatch, getState) => {
     dispatch(fetchRequest())
+    console.log(cookie.load('accountInfo'))
 
     return fetch('/api/account', {
       method: 'POST',
@@ -108,9 +119,13 @@ export function login (data) {
       }
     }).then(function (response) {
       if (response.status === 200) {
-        dispatch(push('/'))
-        dispatch(setLoginSuccess())
-        setTimeout(() => dispatch(hideLoginSuccess()), 3000)
+        response.text().then((data) => {
+          data = JSON.parse(data)
+          cookie.save('accountInfo', data, { path: '/' })
+          dispatch(push('/'))
+          dispatch(setLoginSuccess(data))
+          setTimeout(() => dispatch(hideLoginSuccess()), 3000)
+        })
       }
       if (response.status === 401) {
         dispatch(showInvalidCredential())
@@ -119,6 +134,13 @@ export function login (data) {
     }, function (error) {
       dispatch(fetchFailure(error))
     })
+  }
+}
+
+export function logout () {
+  return (dispatch) => {
+    cookie.remove('accountInfo', { path: '/' })
+    dispatch(removeAccountInfo())
   }
 }
 
@@ -207,12 +229,17 @@ const ACTION_HANDLERS = {
       isFetching: false,
       didInvalidate: false,
       showLoginSuccess: true,
-      isLogin: true
+      accountInfo: action.accountInfo
     })
   },
   [HIDE_LOGIN_SUCCESS]: (state, action) => {
     return Object.assign({}, state, {
       showLoginSuccess: false
+    })
+  },
+  [REMOVE_ACCOUNT_INFO]: (state, action) => {
+    return Object.assign({}, state, {
+      accountInfo: undefined
     })
   }
 }
@@ -226,6 +253,7 @@ const initialState = {
   showInvalidCredential: false,
   showSignUpSuccess: false,
   showLoginSuccess: false,
+  accountInfo: cookie.load('accountInfo'),
   accounts: []
 }
 
