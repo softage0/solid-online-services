@@ -29,10 +29,14 @@ export class Header extends React.Component<void, Props, void> {
             <Link className='navbar-brand' to='/'>Solid Online Services</Link>
           </div>
           <div id='navbar' className='navbar-collapse collapse'>
+            {this.props.account.isFetching &&
+              <p className='navbar-text'>Loading...</p>}
             {this.props.account.showSignUpSuccess &&
               <p className='navbar-text'>Sign Up Success</p>}
             {this.props.account.showLoginSuccess &&
               <p className='navbar-text'>Login Success</p>}
+            {this.props.account.showAccountUpdateSuccess &&
+              <p className='navbar-text'>Account Update Success</p>}
 
             <ul className='nav navbar-nav navbar-right'>
               <li><Link to='/admin'>Admin</Link></li>

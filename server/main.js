@@ -108,12 +108,12 @@ app.use(convert(route.post('/api/account/:id', function*(id) {
 
 // modify account detail
 app.use(convert(route.put('/api/account', function *() {
-  let modifiedAccount = JSON.parse(yield parse(this));
+  let modifiedAccount = yield parse(this);
   modifiedAccount.modified_at = new Date;
 
   var updated = yield Accounts.updateById(modifiedAccount._id, modifiedAccount);
   if(!updated) {
-    this.throw(405, "Unable to update account %s", modifiedAccount._id);
+    this.throw(405, "Unable to update account %s", modifiedAccount.id);
   }
 
   this.body = updated;

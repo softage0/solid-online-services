@@ -17,6 +17,8 @@ export const SHOW_SIGN_UP_SUCCESS = 'SHOW_SIGN_UP_SUCCESS'
 export const HIDE_SIGN_UP_SUCCESS = 'HIDE_SIGN_UP_SUCCESS'
 export const SET_LOGIN_SUCCESS = 'SET_LOGIN_SUCCESS'
 export const HIDE_LOGIN_SUCCESS = 'HIDE_LOGIN_SUCCESS'
+export const SHOW_ACCOUNT_UPDATE_SUCCESS = 'SHOW_ACCOUNT_UPDATE_SUCCESS'
+export const HIDE_ACCOUNT_UPDATE_SUCCESS = 'HIDE_ACCOUNT_UPDATE_SUCCESS'
 export const REMOVE_ACCOUNT_INFO = 'REMOVE_ACCOUNT_INFO'
 
 // ------------------------------------
@@ -83,6 +85,18 @@ function setLoginSuccess (accountInfo) {
 function hideLoginSuccess () {
   return {
     type: HIDE_LOGIN_SUCCESS
+  }
+}
+
+function showAccountUpdateSuccess () {
+  return {
+    type: SHOW_ACCOUNT_UPDATE_SUCCESS
+  }
+}
+
+function hideAccountUpdateSuccess () {
+  return {
+    type: HIDE_ACCOUNT_UPDATE_SUCCESS
   }
 }
 
@@ -200,12 +214,35 @@ export function getAccountById (id) {
   }
 }
 
+export function updateAccount (accountDetail) {
+  return (dispatch) => {
+    dispatch(fetchRequest())
+
+    return fetch('/api/account', {
+      method: 'PUT',
+      body: JSON.stringify(accountDetail),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }).then(function (response) {
+      if (response.status === 200) {
+        dispatch(push('/admin'))
+        dispatch(showAccountUpdateSuccess())
+        setTimeout(() => dispatch(hideAccountUpdateSuccess()), 3000)
+      }
+    }, function (error) {
+      dispatch(fetchFailure(error))
+    })
+  }
+}
+
 export const actions = {
   signUp,
   login,
   updateAccountList,
   redirectToAccountSettingForm,
-  getAccountById
+  getAccountById,
+  updateAccount
 }
 
 // ------------------------------------
@@ -279,6 +316,18 @@ const ACTION_HANDLERS = {
   [HIDE_LOGIN_SUCCESS]: (state, action) => {
     return Object.assign({}, state, {
       showLoginSuccess: false
+    })
+  },
+  [SHOW_ACCOUNT_UPDATE_SUCCESS]: (state, action) => {
+    return Object.assign({}, state, {
+      isFetching: false,
+      didInvalidate: false,
+      showAccountUpdateSuccess: true
+    })
+  },
+  [HIDE_ACCOUNT_UPDATE_SUCCESS]: (state, action) => {
+    return Object.assign({}, state, {
+      showAccountUpdateSuccess: false
     })
   },
   [REMOVE_ACCOUNT_INFO]: (state, action) => {
