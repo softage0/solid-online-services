@@ -10,6 +10,7 @@ export const FETCH_REQUEST = 'FETCH_REQUEST'
 export const FETCH_SUCCESS = 'FETCH_SUCCESS'
 export const FETCH_FAILURE = 'FETCH_FAILURE'
 export const FETCH_ACCOUNT_LIST = 'FETCH_ACCOUNT_LIST'
+export const FETCH_ACCOUNT_DETAIL = 'FETCH_ACCOUNT_DETAIL'
 export const SHOW_INVALID_CREDENTIAL = 'SHOW_INVALID_CREDENTIAL'
 export const HIDE_INVALID_CREDENTIAL = 'HIDE_INVALID_CREDENTIAL'
 export const SHOW_SIGN_UP_SUCCESS = 'SHOW_SIGN_UP_SUCCESS'
@@ -38,6 +39,13 @@ function fetchAccountList (data) {
   return {
     type: FETCH_ACCOUNT_LIST,
     data
+  }
+}
+
+function fetchAccountDetail (accountDetail) {
+  return {
+    type: FETCH_ACCOUNT_DETAIL,
+    accountDetail
   }
 }
 
@@ -165,10 +173,39 @@ export function updateAccountList () {
   }
 }
 
+export function redirectToAccountSettingForm (id) {
+  return (dispatch) => {
+    dispatch(push('/account/' + id))
+  }
+}
+
+export function getAccountById (id) {
+  return (dispatch) => {
+    dispatch(fetchRequest())
+
+    return fetch('/api/account/' + id, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }).then(function (response) {
+      if (response.status === 200) {
+        response.text().then((data) => {
+          dispatch(fetchAccountDetail(JSON.parse(data)))
+        })
+      }
+    }, function (error) {
+      dispatch(fetchFailure(error))
+    })
+  }
+}
+
 export const actions = {
   signUp,
   login,
-  updateAccountList
+  updateAccountList,
+  redirectToAccountSettingForm,
+  getAccountById
 }
 
 // ------------------------------------
@@ -198,6 +235,13 @@ const ACTION_HANDLERS = {
       isFetching: false,
       didInvalidate: false,
       accounts: action.data
+    })
+  },
+  [FETCH_ACCOUNT_DETAIL]: (state, action) => {
+    return Object.assign({}, state, {
+      isFetching: false,
+      didInvalidate: false,
+      accountDetail: action.accountDetail
     })
   },
   [SHOW_INVALID_CREDENTIAL]: (state, action) => {

@@ -94,14 +94,14 @@ app.use(convert(route.post('/api/account', function*() {
 // POST is used instead of GET since React-router eats all GET request.
 // It would rather split api domain and use GET request.
 app.use(convert(route.post('/api/account_list', function*() {
-  this.body = yield Accounts.find({});
+  this.body = yield Accounts.find({}, '-password');
 })));
 
-// show account list by id
+// show account by id
 // POST is used instead of GET since React-router eats all GET request.
 // It would rather split api domain and use GET request.
 app.use(convert(route.post('/api/account/:id', function*(id) {
-  let account = yield Accounts.findOne({_id:id});
+  let account = yield Accounts.findOne({id:id});
   if (!account) this.throw(404, 'invalid account id');
   this.body = account;
 })));

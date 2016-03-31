@@ -5,6 +5,7 @@ import HomeView from 'views/HomeView'
 import SignUpView from 'views/SignUpView'
 import LoginView from 'views/LoginView'
 import AdminView from 'views/AdminView'
+import AccountSettingView from 'views/AccountSettingView'
 
 export default (store) => (
   <Route path='/' component={CoreLayout}>
@@ -12,5 +13,6 @@ export default (store) => (
     <Route path='/signup' component={SignUpView}/>
     <Route path='/login' component={LoginView}/>
     <Route path='/admin' component={AdminView}/>
+    <Route path='/account/:id' component={AccountSettingView}/>
   </Route>
 )

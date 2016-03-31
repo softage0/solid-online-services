@@ -36,11 +36,14 @@ export class Header extends React.Component<void, Props, void> {
 
             <ul className='nav navbar-nav navbar-right'>
               <li><Link to='/admin'>Admin</Link></li>
-              <li><Link to='/signup'>Sign Up</Link></li>
+              {!this.props.account.accountInfo &&
+                <li><Link to='/signup'>Sign Up</Link></li>}
               {!this.props.account.accountInfo &&
                 <li><Link to='/login'>Login</Link></li>}
               {this.props.account.accountInfo &&
-                <li><Link to='/login' onClick={this.props.logout}>{this.props.account.accountInfo.name} logout</Link></li>}
+                <li>
+                  <Link to='/login' onClick={this.props.logout}>{this.props.account.accountInfo.name} logout</Link>
+                </li>}
             </ul>
           </div>
         </div>
