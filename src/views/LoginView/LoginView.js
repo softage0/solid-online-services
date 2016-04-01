@@ -1,26 +1,12 @@
-import React, { PropTypes } from 'react'
-import { connect } from 'react-redux'
+import React from 'react'
 import LoginForm from '../../forms/LoginForm'
 
-type Props = {
-  account: Object
-};
-
-export class Login extends React.Component<void, Props, void> {
-  static propTypes = {
-    account: PropTypes.object.isRequired
-  };
-
+export class Login extends React.Component {
   render () {
     return (
-      <LoginForm account={this.props.account} />
+      <LoginForm />
     )
   }
 }
 
-const mapStateToProps = (state) => ({
-  account: state.account
-})
-
-export default connect(mapStateToProps, {
-})(Login)
+export default Login

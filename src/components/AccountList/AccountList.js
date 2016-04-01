@@ -10,13 +10,18 @@ export class AccountList extends React.Component<void, Props, void> {
   // bind each function for all mapping items outside of JSX.
   defineMappingfunctions () {
     this.eachFunction = {}
-    this.props.accounts.forEach((account) => {
-      if (this.props.itemFunction) {
+    if (this.props.itemFunction) {
+      this.props.accounts.forEach((account) => {
         this.eachFunction[account._id] = this.props.itemFunction.bind(this, account.id)
-      } else {
-        this.eachFunction[account._id] = () => {}
+      })
+      this.itemStyle = {
+        cursor: 'pointer'
       }
-    })
+    } else {
+      this.props.accounts.forEach((account) => {
+        this.eachFunction[account._id] = () => {}
+      })
+    }
   }
 
   props: Props;
@@ -35,7 +40,7 @@ export class AccountList extends React.Component<void, Props, void> {
         </thead>
         <tbody>
         {this.props.accounts.map(function (account) {
-          return <tr key={account._id} onClick={this.eachFunction[account._id]}>
+          return <tr key={account._id} onClick={this.eachFunction[account._id]} style={this.itemStyle}>
             <td>{account.id}</td>
             <td>{account.name}</td>
             <td>{account.email}</td>

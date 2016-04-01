@@ -109,7 +109,6 @@ function removeAccountInfo () {
 export function signUp (data) {
   return (dispatch, getState) => {
     dispatch(fetchRequest())
-    console.log(cookie.load('accountInfo'))
 
     return fetch('/api/account', {
       method: 'POST',
@@ -122,6 +121,10 @@ export function signUp (data) {
         dispatch(push('/'))
         dispatch(showSignUpSuccess())
         setTimeout(() => dispatch(hideSignUpSuccess()), 3000)
+      }
+      if (response.status === 409) {
+        dispatch(showInvalidCredential())
+        setTimeout(() => dispatch(hideInvalidCredential()), 2000)
       }
     }, function (error) {
       dispatch(fetchFailure(error))
@@ -346,6 +349,7 @@ const initialState = {
   showInvalidCredential: false,
   showSignUpSuccess: false,
   showLoginSuccess: false,
+  showAccountUpdateSuccess: false,
   accountInfo: cookie.load('accountInfo'),
   accounts: []
 }
