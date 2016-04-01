@@ -5,8 +5,8 @@ type Props = {
   params: Object
 };
 
-export class AccountSetting extends React.Component<void, Props, void> {
-  props: Props
+export class AccountSetting extends React.Component {
+  props: Props;
 
   render () {
     return (

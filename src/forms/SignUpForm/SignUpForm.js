@@ -44,7 +44,7 @@ export class SignUp extends React.Component {
         <fieldset>
           <legend>Sign Up</legend>
           <AccountDetailField field={id} fieldName='ID' />
-          <AccountDetailField field={password} fieldName='Password' />
+          <AccountDetailField field={password} fieldName='Password' type='password' />
           <AccountDetailField field={name} fieldName='Name' />
           <AccountDetailField field={email} fieldName='Email' />
           <div className='form-group'>

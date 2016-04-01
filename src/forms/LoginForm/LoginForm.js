@@ -36,7 +36,7 @@ export class Login extends React.Component {
         <fieldset>
           <legend>Login</legend>
           <AccountDetailField field={id} fieldName='ID' />
-          <AccountDetailField field={password} fieldName='Password' />
+          <AccountDetailField field={password} fieldName='Password' type='password' />
           <div className='form-group'>
             <div className='col-lg-10 col-lg-offset-2'>
               <button type='reset' className='btn btn-default' onClick={resetForm}>Cancel</button>

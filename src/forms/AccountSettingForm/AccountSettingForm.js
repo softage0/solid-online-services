@@ -51,7 +51,7 @@ export class AccountSetting extends React.Component {
           <legend>Login</legend>
           <input type='hidden' {..._id}/>
           <AccountDetailField field={id} fieldName='ID' />
-          <AccountDetailField field={password} fieldName='Password' />
+          <AccountDetailField field={password} fieldName='Password' type='password' />
           <AccountDetailField field={name} fieldName='Name' />
           <AccountDetailField field={email} fieldName='Email' />
           <div className='form-group'>

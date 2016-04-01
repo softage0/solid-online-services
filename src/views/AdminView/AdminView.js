@@ -9,7 +9,9 @@ type Props = {
   redirectToAccountSettingForm: Function
 };
 
-export class Admin extends React.Component<void, Props, void> {
+export class Admin extends React.Component {
+  props: Props;
+
   static propTypes = {
     account: PropTypes.object.isRequired,
     updateAccountList: PropTypes.func.isRequired,
