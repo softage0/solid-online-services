@@ -335,7 +335,7 @@ const ACTION_HANDLERS = {
   },
   [REMOVE_ACCOUNT_INFO]: (state, action) => {
     return Object.assign({}, state, {
-      accountInfo: undefined
+      accountInfo: null
     })
   }
 }
