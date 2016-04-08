@@ -59,7 +59,6 @@ export class AccountList extends React.Component<void, Props, void> {
               </table>
               {this.state.activeFormId === account.id
                 ? <AccountSettingForm key={account._id} accountDetail={account} /> : null}
-
             </div>
           }.bind(this))}
       </div>

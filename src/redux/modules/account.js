@@ -231,6 +231,7 @@ export function updateAccount (accountDetail) {
     }).then(function (response) {
       if (response.status === 200) {
         dispatch(push('/admin'))
+        dispatch(updateAccountList())
         dispatch(showAccountUpdateSuccess())
         setTimeout(() => dispatch(hideAccountUpdateSuccess()), 3000)
       }
