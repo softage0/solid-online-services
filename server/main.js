@@ -94,7 +94,7 @@ app.use(convert(route.post('/api/account', function*() {
 // POST is used instead of GET since React-router eats all GET request.
 // It would rather split api domain and use GET request.
 app.use(convert(route.post('/api/account_list', function*() {
-  this.body = yield Accounts.find({}, '-password')
+  this.body = yield Accounts.find({})
 })))
 
 // show account by id

@@ -15,12 +15,10 @@ export class AccountList extends React.Component<void, Props, void> {
   // bind each function for all mapping items outside of JSX.
   defineMappingfunctions () {
     this.eachFunction = {}
-    this.userId = {}
     if (this.props.itemFunction) {
       this.props.accounts.forEach((account) => {
         this.eachFunction[account._id] =
           () => { this.setState({activeFormId: account.id !== this.state.activeFormId ? account.id : null}) }
-        this.userId[account._id] = account.id
       })
       this.itemStyle = {
         cursor: 'pointer'
@@ -60,7 +58,7 @@ export class AccountList extends React.Component<void, Props, void> {
                 </tbody>
               </table>
               {this.state.activeFormId === account.id
-                ? <AccountSettingForm key={account._id} userId={this.userId[account._id]} /> : null}
+                ? <AccountSettingForm key={account._id} accountDetail={account} /> : null}
 
             </div>
           }.bind(this))}
