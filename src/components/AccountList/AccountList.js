@@ -18,7 +18,13 @@ export class AccountList extends React.Component<void, Props, void> {
     if (this.props.itemFunction) {
       this.props.accounts.forEach((account) => {
         this.eachFunction[account._id] =
-          () => { this.setState({activeFormId: account.id !== this.state.activeFormId ? account.id : null}) }
+          () => {
+            if (account.id !== this.state.activeFormId) {
+              this.setState({activeFormId: null}, () => { this.setState({activeFormId: account.id}) })
+            } else {
+              this.setState({activeFormId: null})
+            }
+          }
       })
       this.itemStyle = {
         cursor: 'pointer'
