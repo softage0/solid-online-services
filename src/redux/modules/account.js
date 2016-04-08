@@ -44,9 +44,10 @@ function fetchAccountList (data) {
   }
 }
 
-function fetchAccountDetail (accountDetail) {
+function fetchAccountDetail (id, accountDetail) {
   return {
     type: FETCH_ACCOUNT_DETAIL,
+    id,
     accountDetail
   }
 }
@@ -208,7 +209,7 @@ export function getAccountById (id) {
     }).then(function (response) {
       if (response.status === 200) {
         response.text().then((data) => {
-          dispatch(fetchAccountDetail(JSON.parse(data)))
+          dispatch(fetchAccountDetail(id, JSON.parse(data)))
         })
       }
     }, function (error) {
@@ -281,7 +282,7 @@ const ACTION_HANDLERS = {
     return Object.assign({}, state, {
       isFetching: false,
       didInvalidate: false,
-      accountDetail: action.accountDetail
+      accountDetails: Object.assign({}, state.accountDetails, {[action.id]: action.accountDetail})
     })
   },
   [SHOW_INVALID_CREDENTIAL]: (state, action) => {
@@ -351,7 +352,8 @@ const initialState = {
   showLoginSuccess: false,
   showAccountUpdateSuccess: false,
   accountInfo: cookie.load('accountInfo'),
-  accounts: []
+  accounts: [],
+  accountDetails: {}
 }
 
 export default function accountReducer (state = initialState, action) {

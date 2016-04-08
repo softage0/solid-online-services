@@ -32,6 +32,7 @@ type Props = {
   account: Object,
   fields: Object,
   params: Object,
+  userId: String,
   getAccountById: Function
 }
 
@@ -39,7 +40,7 @@ export class AccountSetting extends React.Component {
   props: Props;
 
   componentWillMount () {
-    this.props.getAccountById(this.props.params.id)
+    this.props.getAccountById(this.props.userId || this.props.params.id)
   }
 
   render () {
@@ -74,8 +75,8 @@ export default reduxForm(
     fields,
     validate
   },
-  (state) => ({
-    initialValues: state.account.accountDetail,
+  (state, props) => ({
+    initialValues: state.account.accountDetails[props.userId || props.params.id],
     account: state.account
   }),
   {getAccountById}
