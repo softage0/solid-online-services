@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "allowJs": true,
+    "target": "esnext",
+    "typeRoots" : ["./@types", "./node_modules/@types"],
+    "outDir": "./dist",
+    "sourceMap": true
+  },
+  "include": [
+    "server/**/*"
+  ]
+}

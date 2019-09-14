@@ -1,19 +1,9 @@
-import React, { PropTypes } from 'react'
+import React from 'react'
 import { connect } from 'react-redux'
-import { Link } from 'react-router'
-import { logout } from '../../redux/modules/account'
+import { NavLink } from 'react-router-dom'
+import { logout } from '../../redux/account'
 
-type Props = {
-  account: Object,
-  logout: Function
-};
-
-export class Header extends React.Component<void, Props, void> {
-  static propTypes = {
-    account: PropTypes.object.isRequired,
-    logout: PropTypes.func.isRequired
-  };
-
+export class Header extends React.Component {
   render () {
     return (
       <nav className='navbar navbar-inverse navbar-fixed-top'>
@@ -26,7 +16,7 @@ export class Header extends React.Component<void, Props, void> {
               <span className='icon-bar'></span>
               <span className='icon-bar'></span>
             </button>
-            <Link className='navbar-brand' to='/'>Solid Online Services</Link>
+            <NavLink className='navbar-brand' to='/'>Solid Online Services</NavLink>
           </div>
           <div id='navbar' className='navbar-collapse collapse'>
             {this.props.account.isFetching &&
@@ -39,14 +29,14 @@ export class Header extends React.Component<void, Props, void> {
               <p className='navbar-text'>Account Update Success</p>}
 
             <ul className='nav navbar-nav navbar-right'>
-              <li><Link to='/admin'>Admin</Link></li>
+              <li><NavLink to='/admin'>Admin</NavLink></li>
               {!this.props.account.accountInfo &&
-                <li><Link to='/signup'>Sign Up</Link></li>}
+                <li><NavLink to='/signup'>Sign Up</NavLink></li>}
               {!this.props.account.accountInfo &&
-                <li><Link to='/login'>Login</Link></li>}
+                <li><NavLink to='/login'>Login</NavLink></li>}
               {this.props.account.accountInfo &&
                 <li>
-                  <Link to='/login' onClick={this.props.logout}>{this.props.account.accountInfo.name} logout</Link>
+                  <NavLink to='/login' onClick={this.props.logout}>{this.props.account.accountInfo.name} logout</NavLink>
                 </li>}
             </ul>
           </div>

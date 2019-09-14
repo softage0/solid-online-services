@@ -9,8 +9,7 @@ You can simply access [this Heroku server](https://solid-services.herokuapp.com/
 Requirements
 ------------
 
-* node `^4.2.0`
-* npm `^3.0.0`
+* node `^10.16.0`
 
 
 Getting Started
@@ -23,10 +22,4 @@ $ git clone https://github.com/softage0/solid-online-services.git
 $ cd solid-online-services
 $ npm install                   # Install Node modules listed in ./package.json (may take a while the first time)
 $ npm start                     # Compile and launch
-```
-
-If you want to disable redux devtools, use the following command instead of `npm start`:
-
-```shell
-$ npm run dev:no-debug
 ```

@@ -1,6 +1,7 @@
 import React from 'react'
+import {connect} from 'react-redux'
 import { reduxForm } from 'redux-form'
-import { updateAccount, getAccountById } from '../../redux/modules/account'
+import { updateAccount, getAccountById } from '../../redux/account'
 import AccountDetailField from '../../components/AccountDetailField/AccountDetailField'
 
 export const fields = ['_id', 'id', 'password', 'name', 'email']
@@ -69,15 +70,19 @@ export class AccountSetting extends React.Component {
   }
 }
 
-export default reduxForm(
-  {
-    form: 'AccountSetting',
-    fields,
-    validate
-  },
+let InitializeFromStateForm = reduxForm({
+  form: 'AccountSetting',
+  fields,
+  validate
+})(AccountSetting);
+
+InitializeFromStateForm = connect(
   (state, props) => ({
     initialValues: props.params ? state.account.accountDetails[props.params.id] : props.accountDetail,
-    account: state.account
+    account: state.account,
   }),
-  {getAccountById}
-)(AccountSetting)
+  {getAccountById},
+)(InitializeFromStateForm);
+
+
+export default InitializeFromStateForm;

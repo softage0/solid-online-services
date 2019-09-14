@@ -1,6 +1,7 @@
 import React from 'react'
+import {connect} from 'react-redux'
 import { reduxForm } from 'redux-form'
-import { login } from '../../redux/modules/account'
+import { login } from '../../redux/account'
 import AccountDetailField from '../../components/AccountDetailField/AccountDetailField'
 
 export const fields = ['id', 'password']
@@ -51,13 +52,17 @@ export class Login extends React.Component {
   }
 }
 
-export default reduxForm(
-  {
-    form: 'Login',
-    fields,
-    validate
-  },
-  (state) => ({
-    account: state.account
-  })
-)(Login)
+let InitializeFromStateForm = reduxForm({
+  form: 'Login',
+  fields,
+  validate
+})(Login);
+
+InitializeFromStateForm = connect(
+  state => ({
+    account: state.account,
+  }),
+)(InitializeFromStateForm);
+
+
+export default InitializeFromStateForm;

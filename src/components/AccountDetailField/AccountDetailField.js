@@ -10,15 +10,16 @@ export class AccountDetailField extends React.Component {
   props: Props;
 
   render () {
-    let type = this.props.type || 'text'
+    const {type = 'text', fieldName, field = {}} = this.props;
+    const {touched, error} = field;
 
     return (
       <div className='form-group'>
-        <label htmlFor={this.props.fieldName} className='col-lg-2 control-label'>{this.props.fieldName}</label>
+        <label htmlFor={fieldName} className='col-lg-2 control-label'>{fieldName}</label>
         <div className='col-lg-10'>
-          <input type={type} className='form-control' id={this.props.fieldName}
-            placeholder={this.props.fieldName} {...this.props.field}/>
-          {this.props.field.touched && this.props.field.error && <div>{this.props.field.error}</div>}
+          <input type={type} className='form-control' id={fieldName}
+            placeholder={fieldName} {...field}/>
+          {touched && error && <div>{error}</div>}
         </div>
       </div>
     )
@@ -26,4 +27,3 @@ export class AccountDetailField extends React.Component {
 }
 
 export default AccountDetailField
-

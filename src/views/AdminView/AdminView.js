@@ -1,24 +1,10 @@
-import React, { PropTypes } from 'react'
+import React from 'react'
 import { connect } from 'react-redux'
-import { updateAccountList, redirectToAccountSettingForm } from '../../redux/modules/account'
+import { updateAccountList, redirectToAccountSettingForm } from '../../redux/account'
 import AccountList from '../../components/AccountList/AccountList'
 
-type Props = {
-  account: Object,
-  updateAccountList: Function,
-  redirectToAccountSettingForm: Function
-};
-
 export class Admin extends React.Component {
-  props: Props;
-
-  static propTypes = {
-    account: PropTypes.object.isRequired,
-    updateAccountList: PropTypes.func.isRequired,
-    redirectToAccountSettingForm: PropTypes.func.isRequired
-  };
-
-  componentWillMount () {
+  componentDidMount() {
     this.props.updateAccountList()
   }
 
