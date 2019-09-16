@@ -108,6 +108,6 @@ router.post('/login', (req, res) => {
   });
 });
 
-app.listen(configs.serverPort, configs.serverHost, () => {
+app.listen(configs.serverPort, () => {
   console.log(`Server listening on port ${configs.serverPort}`);
 });
