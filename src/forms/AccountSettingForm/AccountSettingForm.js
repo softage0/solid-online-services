@@ -1,10 +1,8 @@
 import React from 'react'
 import {connect} from 'react-redux'
-import { reduxForm } from 'redux-form'
+import {reduxForm, Field} from 'redux-form';
 import { updateAccount, getAccountById } from '../../redux/account'
 import AccountDetailField from '../../components/AccountDetailField/AccountDetailField'
-
-export const fields = ['_id', 'id', 'password', 'name', 'email']
 
 const validate = (values) => {
   const errors = {}
@@ -27,35 +25,23 @@ const validate = (values) => {
   return errors
 }
 
-type Props = {
-  handleSubmit: Function,
-  resetForm: Function,
-  account: Object,
-  fields: Object,
-  params: Object,
-  accountDetail: String,
-  getAccountById: Function
-}
-
 export class AccountSetting extends React.Component {
-  props: Props;
-
   componentWillMount () {
     this.props.params && this.props.getAccountById(this.props.params.id)
   }
 
   render () {
-    const { fields: {_id, id, password, name, email}, handleSubmit, resetForm, account } = this.props
+    const {handleSubmit, resetForm, account} = this.props;
 
     return (
       <form className='form-horizontal' onSubmit={handleSubmit((values, dispatch) => dispatch(updateAccount(values)))}>
         <fieldset>
           <legend>Login</legend>
-          <input type='hidden' {..._id}/>
-          <AccountDetailField field={id} fieldName='ID' />
-          <AccountDetailField field={password} fieldName='Password' type='password' />
-          <AccountDetailField field={name} fieldName='Name' />
-          <AccountDetailField field={email} fieldName='Email' />
+          <Field name="_id" type='hidden' component='input' />
+          <Field name="id" fieldName='ID' component={AccountDetailField} />
+          <Field name="password" fieldName='Password' type="password" component={AccountDetailField} />
+          <Field name="name" fieldName='Name' component={AccountDetailField} />
+          <Field name="email" fieldName='Email' component={AccountDetailField} />
           <div className='form-group'>
             <div className='col-lg-10 col-lg-offset-2'>
               <button type='reset' className='btn btn-default' onClick={resetForm}>Reset</button>
@@ -72,7 +58,6 @@ export class AccountSetting extends React.Component {
 
 let InitializeFromStateForm = reduxForm({
   form: 'AccountSetting',
-  fields,
   validate
 })(AccountSetting);
 
