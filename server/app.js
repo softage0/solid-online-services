@@ -23,7 +23,7 @@ app.use('/api', router);
 
 // create new account
 router.post('/api/account', (req, res) => {
-  const newAccount = req.query;
+  const newAccount = req.body;
   if(!newAccount.id || !newAccount.password) {
     res.statusMessage = 'Invalid credential';
     res.status(401).send();
@@ -51,7 +51,7 @@ router.post('/api/account', (req, res) => {
 // POST is used instead of GET since React-router eats all GET request.
 // It would rather split api domain and use GET request.
 router.post('/account_list', (req, res) => {
-  const query = req.query;
+  const query = req.body;
 
   Accounts.find(query).then((function (result) {
     res.json(result);
@@ -77,7 +77,7 @@ router.post('/account/:id', (req, res) => {
 // modify account detail
 router.put('/account', (req, res) => {
   const modifiedAccount = {
-    ...req.query,
+    ...req.body,
     modified_at: new Date()
   };
 
@@ -93,7 +93,7 @@ router.put('/account', (req, res) => {
 
 // login
 router.post('/login', (req, res) => {
-  const credential = req.query;
+    const credential = req.body;
 
   Accounts.findOne({id:credential.id}).then(account => {
     if(!account || account.password !== credential.password) {
